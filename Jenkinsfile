@@ -46,6 +46,15 @@ pipeline {
         sh "java -jar /var/www/html/rectangles/all/rectangle_${env.BUILD_NUMBER}.jar 3 4"
       }
     }
+    stage("Test on Debian") {
+      agent {
+        docker 'openjdk:7u181-jre'
+      }
+      steps {
+        sh "java -jar /var/www/html/rectangles/all/rectangle_${env.BUILD_NUMBER}.jar 3 4"
+      }
+    }
+
   }
 
 }
