@@ -36,7 +36,7 @@ pipeline {
       }
       steps {
         sh "mkdir -p /var/www/html/rectangles/all/${env.BRANCH_NAME}"
-        sh "cp dist/rectangle_${env.BUILD_NUMBER}.jar /var/www/html/rectangles/all/${env.BRANCH_NAME}"
+        sh "cp dist/rectangle_${env.BUILD_NUMBER}.jar /var/www/html/rectangles/all/${env.BRANCH_NAME}/"
       }
     }
     stage("Running on Centos") {
@@ -55,7 +55,7 @@ pipeline {
         branch 'master'
       }
       steps {
-        sh "cp /var/www/html/rectangles/all/rectangle_${env.BRANCH_NAME}.jar /var/www/html/rectangles/green/rectangle_${env.BRANCH_NAME}.jar"
+        sh "cp /var/www/html/rectangles/all/rectangle_${env.BUILD_NAME}.jar /var/www/html/rectangles/green/rectangle_${env.BRANCH_NUMBER}.jar"
       }
     }
     stage('Promote Development Branch to Master') {
