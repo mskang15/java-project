@@ -35,7 +35,8 @@ pipeline {
         label 'apache'
       }
       steps {
-        sh "cp dist/rectangle_${env.BUILD_NUMBER}.jar /var/www/html/rectangles/all/"
+        sh 'mkdir /var/www/html/rectangles/all/${env.BRANCH_NAME}'
+        sh "cp dist/rectangle_${env.BUILD_NUMBER}.jar /var/www/html/rectangles/all/${env.BRANCH_NAME}"
       }
     }
     stage("Running on Centos") {
@@ -43,7 +44,7 @@ pipeline {
         label 'CentOS'
       }
       steps {
-        sh "java -jar /var/www/html/rectangles/all/rectangle_${env.BUILD_NUMBER}.jar 3 4"
+        sh "java -jar /var/www/html/rectangles/all/${env.BRANCH_NAME}/rectangle_${env.BUILD_NUMBER}.jar 3 4"
       }
     }
     stage('Promote to Green') {
@@ -51,10 +52,30 @@ pipeline {
         label 'apache'
       }
       when {
-        branch 'development'
+        branch 'master'
       }
       steps {
         sh "cp /var/www/html/rectangles/all/rectangle_${env.BUILD_NUMBER}.jar /var/www/html/rectangles/green/rectangle_${env.BUILD_NUMBER}.jar"
+      }
+    }
+    stage('Promote Development Branch to Master') {
+      agent {
+        label 'apache'
+      }
+      when {
+        branch 'development'
+      }
+      steps {
+        echo "Stashing any local changes"
+        sh 'git stash'
+        echo "Chekcing out development branch"
+        sh 'git checkout development'
+        echo "Checking out master branch"
+        sh 'git checkout master'
+        echo 'Merging development into master branch'
+        sh 'git merge development'
+        echo "pushing to origin master"
+        sh 'git push origin master'
       }
     }
 
