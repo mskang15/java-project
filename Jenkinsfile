@@ -36,7 +36,7 @@ pipeline {
       }
       steps {
         sh 'mkdir -p /var/www/html/rectangles/all/${env.BRANCH_NAME}'
-        sh "cp dist/rectangle_${env.BUILD_NUMBER}.jar /var/www/html/rectangles/all/${env.BRANCH_NAME}"
+        sh "cp dist/rectangle_${env.BUILD_NUMBER}.jar /var/www/html/rectangles/all/${env.BRANCH_NAME}/rectangle_${env.BUILD_NUMBER}.jar"
       }
     }
     stage("Running on Centos") {
@@ -55,7 +55,7 @@ pipeline {
         branch 'master'
       }
       steps {
-        sh "cp /var/www/html/rectangles/all/rectangle_${env.BUILD_NUMBER}.jar /var/www/html/rectangles/green/rectangle_${env.BUILD_NUMBER}.jar"
+        sh "cp /var/www/html/rectangles/all/rectangle_${env.BUILD_NAME}.jar /var/www/html/rectangles/green/rectangle_${env.BRANCH_NUMBER}.jar"
       }
     }
     stage('Promote Development Branch to Master') {
@@ -73,8 +73,6 @@ pipeline {
         echo "Checking out master branch"
         sh 'git checkout master'
         echo 'Merging development into master branch'
-        sh 'git merge development'
-        echo "pushing to origin master"
         sh 'git push origin master'
       }
     }
